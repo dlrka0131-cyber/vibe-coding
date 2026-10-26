@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이브 코딩 수업</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* 👑 메인 타이틀 */
+        .header-title-wrapper {
+            margin: 30px 0 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-title {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 18px 50px;
+        }
+        .header-title::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 35px rgba(255, 118, 117, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.7);
+            z-index: -1;
+        }
+        .title-icon {
+            font-size: 2.8rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        .icon-left { color: #ff7675; filter: drop-shadow(0 4px 6px rgba(255, 118, 117, 0.4)); }
+        .icon-right { color: #fdcb6e; filter: drop-shadow(0 4px 6px rgba(253, 203, 110, 0.4)); animation-delay: 1.5s; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .header-title-text {
+            background: linear-gradient(120deg, #ff6b6b, #6c5ce7, #0984e3, #ff6b6b);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+            animation: shineText 4s linear infinite;
+        }
+        @keyframes shineText {
+            to { background-position: 300% center; }
+        }
+
+        .header-sub {
+            font-size: 1.25rem;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .sub-icon { color: #e17055; font-size: 1.1rem; }
+
+        /* 기획서 · 작품 공유관 카드 두 장 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto 50px;
+        }
+        .lesson-card {
+            background: linear-gradient(145deg, #ffffff, #f3e8ff);
+            border-top: 8px solid #9333ea;
+            border-radius: 16px;
+            padding: 40px 36px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .lesson-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(0,0,0,0.25);
+        }
+        .badge {
+            align-self: flex-start;
+            background-color: rgba(0, 0, 0, 0.06);
+            color: #334155;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .lesson-card h3 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            margin-bottom: 12px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+        .lesson-card p {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-bottom: 28px;
+        }
+        .btn-purple {
+            background-color: #9333ea;
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.25);
+            transition: background-color 0.2s;
+        }
+        .btn-purple:hover { background-color: #7e22ce; }
+        .lesson-card.group-share { background: linear-gradient(145deg, #ffffff, #dcfce7); border-top-color: #16a34a; }
+        .lesson-card .btn-purple, .lesson-card .btn-green { margin-top: auto; }
+        .btn-green {
+            background-color: #16a34a;
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+            transition: background-color 0.2s;
+        }
+        .btn-green:hover { background-color: #15803d; }
+
+
+        @media (max-width: 700px) {
+            .header-title { font-size: 2rem; padding: 14px 28px; gap: 12px; }
+            .title-icon { font-size: 1.8rem; }
+            .header-sub { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title-wrapper">
+        <h1 class="header-title">
+            <i class="fa-solid fa-rocket title-icon icon-left"></i>
+            <span class="header-title-text">캔바로 만드는 바이브 코딩</span>
+            <i class="fa-solid fa-star title-icon icon-right"></i>
+        </h1>
+    </div>
+
+    <div class="header-sub">
+        <i class="fa-solid fa-trophy sub-icon"></i>
+        <span>기획서를 쓰고, 프롬프트를 복사해서 캔바 AI로 나만의 웹 앱을 만들어 보자!</span>
+    </div>
+
+    <div class="card-grid">
+        <div class="lesson-card">
+            <span class="badge">1단계</span>
+            <h3>웹페이지 기획서 작성하기</h3>
+            <p>나만의 웹 앱 아이디어를 기획서로 정리하고, AI 프롬프트를 완성해 캔바로 출동하기</p>
+            <a href="canva-form.html" class="btn-purple">✨ 기획서 작성하기</a>
+        </div>
+
+        <div class="lesson-card group-share">
+            <span class="badge">2단계</span>
+            <h3>바이브코딩 작품 공유관</h3>
+            <p>캔바로 완성한 내 웹 앱 링크를 패들렛에 올리고 친구들 작품 감상하기</p>
+            <a href="https://padlet.com/dlrka0131/breakout-room/Bk5x4dLGmexM4Zgz-PW6VbOYkq2Y5XY19" target="_blank" class="btn-green">패들렛 공유관 ↗</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

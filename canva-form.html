@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 나의 바이브 코딩 기획서</title>
+    <!-- 폰트 두께를 다양하게 사용하기 위해 Pretendard 전체 로드 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+
+    <style>
+        :root {
+            /* 메인 컬러 팔레트 */
+            --clipboard-bg: #2b3a67; /* 딥 블루 테두리 */
+            --board-bg: #f8fafc;     /* 내부 보드 배경 */
+            --text-main: #1e293b;
+            --text-sub: #475569;
+            --purple-glow: rgba(167, 139, 250, 0.4);
+            --purple-border: #c4b5fd;
+            
+            /* 그라데이션 팔레트 (이미지 참고) */
+            --bg-gradient: radial-gradient(circle at 10% 20%, #e4eaff 0%, #f4e8ff 50%, #e0f7fa 100%);
+            --header-purple-light: linear-gradient(90deg, #eaddff, #f3e8ff);
+            --header-purple-dark: linear-gradient(90deg, #d8b4fe, #eaddff);
+            --header-mint: linear-gradient(90deg, #bbf7d0, #ccfbf1);
+            --header-cyan: linear-gradient(90deg, #a5f3fc, #cffafe);
+            --profile-bg: linear-gradient(90deg, #f3e8ff 0%, #e0e7ff 50%, #e0f2fe 100%);
+            
+            /* 버튼 그라데이션 */
+            --btn-copy: linear-gradient(135deg, #10b981, #059669);
+            --btn-canva: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px; /* 화면 꽉 차게 여백 최소화 */
+            overflow-x: hidden;
+        }
+
+        /* 클립보드 외곽 프레임 (화면에 꽉 차도록 넓게) */
+        .clipboard-frame {
+            background-color: var(--clipboard-bg);
+            padding: 16px;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2), inset 0 2px 10px rgba(255,255,255,0.1);
+            position: relative;
+            width: 98vw;
+            max-width: 1600px;
+            min-height: 94vh;
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+        }
+
+        /* 클립보드 상단 집게 장식 */
+        .clipboard-clip {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 40px;
+            background: linear-gradient(to bottom, #ffffff, #cbd5e1);
+            border-radius: 24px;
+            border: 2px solid #94a3b8;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.25), inset 0 3px 6px white;
+            z-index: 10;
+        }
+
+        /* 메인 콘텐츠 영역 (흰색 보드) */
+        .planner-board {
+            background-color: var(--board-bg);
+            border-radius: 20px;
+            padding: 25px 35px 20px 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+
+        /* 상단 타이틀 영역 (매우 크고 두껍게, 테두리 효과) */
+        .header-area {
+            text-align: center;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+        
+        .header-area h1 {
+            color: #1e3a8a; /* 진한 파란색 */
+            font-size: 58px; /* 글씨 크기 대폭 확대 */
+            font-weight: 900; /* 가장 두꺼운 폰트 */
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            
+            /* 흰색 테두리 및 그림자 효과 */
+            -webkit-text-stroke: 6px #ffffff;
+            paint-order: stroke fill;
+            text-shadow: 0 8px 15px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .header-area .subtitle {
+            color: var(--text-main);
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        /* 크리에이터 프로필 (그라데이션 배경) */
+        .creator-profile {
+            background: var(--profile-bg);
+            border-radius: 20px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            border: 2px solid #ffffff;
+        }
+        
+        .profile-title {
+            font-weight: 900;
+            font-size: 17px;
+            color: var(--text-main);
+            line-height: 1.3;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .profile-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            flex: 1;
+        }
+        
+        .profile-inputs input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ffffff;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+        
+        .profile-inputs input:focus {
+            background: #ffffff;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px var(--purple-glow);
+        }
+
+        /* 본문 3단 레이아웃 (왼쪽 2단, 오른쪽 1단 꽉 차게) */
+        .layout-grid {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            flex: 1;
+        }
+        
+        .left-panel {
+            flex: 1.4; /* 왼쪽 영역 비율 */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .left-top-grid {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+        }
+        
+        .left-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .right-panel {
+            flex: 1.1; /* 오른쪽 프롬프트 영역 비율 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 개별 섹션 카드 */
+        .section-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-card.full-height {
+            height: 100%;
+        }
+        
+        /* 각 섹션별 상단 그라데이션 헤더 */
+        .section-header {
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.5);
+        }
+        .header-purple-light { background: var(--header-purple-light); }
+        .header-purple-dark { background: var(--header-purple-dark); }
+        .header-mint { background: var(--header-mint); }
+        .header-cyan { background: var(--header-cyan); }
+        .header-prompt { background: var(--header-cyan); }
+
+        .section-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+            background: rgba(255,255,255,0.6);
+        }
+
+        /* 입력 필드 */
+        .input-box {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid transparent;
+            border-radius: 14px;
+            background: #f1f5f9;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            outline: none;
+            box-shadow: 0 0 0 1px #cbd5e1;
+            transition: all 0.2s;
+        }
+        .input-box:focus {
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--purple-glow), 0 0 0 1px #8b5cf6;
+        }
+        .input-box::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* 넘버링 리스트 디자인 (핵심 기능) */
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .feature-item span {
+            font-weight: 800;
+            color: var(--text-main);
+            font-size: 17px;
+            width: 20px;
+        }
+
+        /* 프롬프트 입력 영역 */
+        .prompt-textarea {
+            width: 100%;
+            flex: 1;
+            min-height: 250px;
+            padding: 20px;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: #f1f5f9;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.7;
+            outline: none;
+            resize: none;
+            box-shadow: 0 0 0 1px #cbd5e1;
+            transition: all 0.2s;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .prompt-textarea:focus {
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--purple-glow), 0 0 0 1px #8b5cf6;
+        }
+        .prompt-textarea::placeholder {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* 버튼 그룹 */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            transition: transform 0.2s, filter 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .action-btn:hover {
+            filter: brightness(1.1);
+        }
+        
+        .copy-btn {
+            background: var(--btn-copy);
+        }
+        
+        .canva-btn {
+            background: var(--btn-canva);
+        }
+
+        .footer-tip {
+            text-align: center;
+            font-size: 16px;
+            color: var(--text-sub);
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* 중앙 배치 토스트 팝업 스타일 */
+        #toastPopup {
+            visibility: hidden;
+            min-width: 480px;
+            background-color: #ffffff;
+            color: var(--text-main);
+            border-radius: 24px;
+            padding: 40px 30px;
+            position: fixed;
+            z-index: 9999;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+            border: 5px solid #10b981; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        #toastPopup.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .toast-icon {
+            background: #10b981;
+            color: white;
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-top: -10px;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .toast-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .toast-title {
+            font-weight: 900;
+            margin-bottom: 12px;
+            font-size: 32px;
+            color: #10b981;
+            letter-spacing: -1px;
+        }
+
+        #toastMessage {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #334155;
+            word-break: keep-all;
+        }
+        
+        #toastMessage b {
+            color: #2563eb;
+            background: #eff6ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid #bfdbfe;
+        }
+    </style>
+</head>
+<!-- body 전체에 spellcheck="false"를 부여해 빨간 밑줄 방지 -->
+<body spellcheck="false">
+
+    <!-- 화면 중앙 팝업 -->
+    <div id="toastPopup">
+        <div class="toast-icon" id="toastIcon">✔</div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">복사 완료!</div>
+            <div id="toastMessage">프롬프트를 성공적으로 복사했습니다.<br>캔바(Canva) AI 창에 <b>Ctrl + V</b> 로 붙여넣으세요!</div>
+        </div>
+    </div>
+
+    <!-- 클립보드 디자인 래퍼 -->
+    <div class="clipboard-frame">
+        <div class="clipboard-clip"></div>
+        
+        <div class="planner-board">
+            
+            <!-- 상단 타이틀 -->
+            <div class="header-area">
+                <h1>✨ 나의 바이브 코딩 기획서</h1>
+                <div class="subtitle">AI와 함께 웹앱을 만들기 전, 내 머릿속 아이디어를 구체화하는 창작 설계도.</div>
+            </div>
+
+            <!-- 크리에이터 프로필 -->
+            <div class="creator-profile">
+                <div class="profile-title">크리에이터<br>프로필</div>
+                <div class="profile-inputs">
+                    <input type="text" id="studentGrade" placeholder="🎓 학년 (예: 6)" spellcheck="false">
+                    <input type="text" id="studentClass" placeholder="🏫 반 (예: 3)" spellcheck="false">
+                    <input type="text" id="studentNumber" placeholder="🔢 번호 (예: 15)" spellcheck="false">
+                    <input type="text" id="studentName" placeholder="👤 이름 (예: 김철수)" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- 메인 콘텐츠 레이아웃 (화면 꽉 차게) -->
+            <div class="layout-grid">
+                
+                <!-- 왼쪽 패널 (1,2,3,4번 영역) -->
+                <div class="left-panel">
+                    <div class="left-top-grid">
+                        
+                        <!-- 컨셉 & 타겟 -->
+                        <div class="left-col">
+                            <div class="section-card">
+                                <div class="section-header header-purple-light">
+                                    <span>📌 1. 프로젝트 컨셉</span>
+                                    <span>💡</span>
+                                </div>
+                                <div class="section-body">
+                                    <input type="text" id="projectTitle" class="input-box" placeholder="예시: 구구단 마스터 게임" spellcheck="false">
+                                </div>
+                            </div>
+
+                            <div class="section-card" style="flex: 1;">
+                                <div class="section-header header-mint">
+                                    <span>🎯 3. 타겟 사용자 및 용도</span>
+                                </div>
+                                <div class="section-body">
+                                    <input type="text" id="targetUser" class="input-box" placeholder="예시: 초등학생, 학습용" spellcheck="false">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 핵심 기능 -->
+                        <div class="left-col">
+                            <div class="section-card full-height">
+                                <div class="section-header header-purple-dark">
+                                    <span>💡 2. 꼭 넣고 싶은 핵심 기능 (TOP 3)</span>
+                                    <span>🎚️</span>
+                                </div>
+                                <div class="section-body" style="justify-content: space-around;">
+                                    <div class="feature-item">
+                                        <span>1.</span>
+                                        <input type="text" id="feature1" class="input-box" placeholder="기능 1 작성" spellcheck="false">
+                                    </div>
+                                    <div class="feature-item">
+                                        <span>2.</span>
+                                        <input type="text" id="feature2" class="input-box" placeholder="기능 2 작성" spellcheck="false">
+                                    </div>
+                                    <div class="feature-item">
+                                        <span>3.</span>
+                                        <input type="text" id="feature3" class="input-box" placeholder="기능 3 작성" spellcheck="false">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 바이브 & 컬러 (왼쪽 하단 전체 차지) -->
+                    <div class="section-card">
+                        <div class="section-header header-cyan">
+                            <span>🎨 4. 나만의 바이브 (디자인 & 컬러)</span>
+                            <span>🖌️</span>
+                        </div>
+                        <div class="section-body" style="flex-direction: row; gap: 20px;">
+                            <input type="text" id="vibeConcept" class="input-box" placeholder="📈 바이브 컨셉 (예: 귀여운, 우주느낌)" spellcheck="false">
+                            <input type="text" id="vibeColor" class="input-box" placeholder="🌈 메인 컬러 (예: 진한 남색)" style="flex: 1;" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽 패널 (AI 프롬프트 작업실) -->
+                <div class="right-panel">
+                    <div class="section-card full-height">
+                        <div class="section-header header-prompt">
+                            <span>🤖 5. AI 프롬프트 작업실</span>
+                            <span style="background: #1e293b; color: white; padding: 3px 8px; border-radius: 6px; font-size: 13px;">>_</span>
+                        </div>
+                        <div class="section-body">
+                            <textarea id="promptText" class="prompt-textarea" spellcheck="false" placeholder="[예시] 제목이 '구구단 마스터 게임'인 웹 앱을 만들어줘.
+1. 시작 버튼을 누르면 랜덤 구구단 문제가 나온다.
+2. 사용자가 정답을 입력하고 확인 버튼을 누르면 정답 여부를 알려준다.
+3. 맞힌 개수에 따라 점수가 올라가고 최종 점수가 뜨도록 디자인해줘."></textarea>
+                            
+                            <div class="button-group">
+                                <button type="button" class="action-btn copy-btn" onclick="copyPrompt()">
+                                    📋 프롬프트 복사하기
+                                </button>
+                                <a href="https://www.canva.com" target="_blank" class="action-btn canva-btn">
+                                    ✨ 캔바로 바로 가기
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 하단 안내 문구 -->
+            <div class="footer-tip">
+                이 설계도를 완성했다면 이제 프롬프트를 복사하고 캔바로 출동할 시간! 🚀
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 새로고침 시 입력값 초기화 및 맞춤법 빨간줄 완벽 차단
+        window.addEventListener('pageshow', function() {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.value = '';
+                input.setAttribute('spellcheck', 'false');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+            });
+        });
+
+        // 팝업 표시 공통 함수 (성공/실패 테마 적용 가능)
+        function showToast(message, isError = false, customTitle = "복사 완료!", customIcon = "✔") {
+            const toast = document.getElementById('toastPopup');
+            const msgDiv = document.getElementById('toastMessage');
+            const iconDiv = document.getElementById('toastIcon');
+            const titleDiv = document.getElementById('toastTitle');
+            
+            msgDiv.innerHTML = message;
+            titleDiv.innerText = customTitle;
+            iconDiv.innerText = customIcon;
+            
+            // 에러(경고) 상태일 때 붉은색 테마 적용
+            if (isError) {
+                toast.style.borderColor = "#ef4444";
+                iconDiv.style.background = "#ef4444";
+                iconDiv.style.boxShadow = "0 8px 20px rgba(239, 68, 68, 0.4)";
+                titleDiv.style.color = "#ef4444";
+            } else {
+                // 정상(성공) 상태일 때 초록색 테마 적용
+                toast.style.borderColor = "#10b981";
+                iconDiv.style.background = "#10b981";
+                iconDiv.style.boxShadow = "0 8px 20px rgba(16, 185, 129, 0.4)";
+                titleDiv.style.color = "#10b981";
+            }
+            
+            toast.className = "show";
+            
+            // 3초 후 팝업 숨기기
+            setTimeout(() => {
+                toast.className = toast.className.replace("show", "");
+            }, 3000);
+        }
+
+        // 프롬프트 텍스트 복사 기능
+        function copyPrompt() {
+            const promptInput = document.getElementById('promptText');
+            if (promptInput.value.trim() === "") {
+                showToast("프롬프트 내용이 비어있어요!<br>내용을 먼저 입력해 주세요.", true, "알림", "!");
+                return;
+            }
+            
+            navigator.clipboard.writeText(promptInput.value).then(() => {
+                showToast("프롬프트를 성공적으로 복사했습니다.<br>캔바(Canva) AI 창에 <b>Ctrl + V</b> 로 붙여넣으세요!");
+            }).catch(err => {
+                showToast("복사에 실패했어요.<br>직접 텍스트를 드래그해서 복사해 주세요.", true, "오류", "X");
+            });
+        }
+
+    </script>
+</body>
+</html>
